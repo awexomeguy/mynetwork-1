@@ -1,11 +1,25 @@
 #include "mynetwork.h"
 #include <iostream>
 
-void MyNetwork::send()
+int MyNetwork::createSocket(sockaddr_in remoteAddress)
 {
-  // just put sendto() here.
-  // eventually, we will make this "unreliable"
-  // eg only send based on a certain probability
-  
-  //std::cout << "test send in network layer\n";
+  return socket(AF_INET, SOCK_DGRAM, 0);
+}
+
+void MyNetwork::send(string test, int sockfd, const sockaddr * servAddr)
+{
+  sendto(sockfd, test.c_str(), test.length(), 0, servAddr, sizeof(servAddr));
+}
+
+unsigned int MyNetwork::receive(int sockfd, char* data)
+{
+  unsigned int length = 0;
+
+  while(length == 0)
+  {
+    cout << "MMMMMMMMMM\n";
+	  length = recvfrom(sockfd, data, MSS, 0, NULL, NULL);
+  }
+
+  return length;
 }

@@ -4,15 +4,12 @@
 #include <netinet/tcp.h>
 #include "mynetwork.h"
 #include "exception.h"
-#include <string>
+#include "constants.h"
 using namespace std;
-
-#define WINSIZE 1024  // sender and receiver buffer size (in bytes)
-#define MSS 256       // the maximum number of bytes in the data field of a TCP segment
 
 typedef struct _MYTCP_Header 
 {
-	struct tcphdr tcp_hdr;
+  struct tcphdr tcp_hdr;
   u_short data_len; //  the actual number of bytes in the data field (optional)
 } __attribute__ ((packed)) MYTCPHeader;
 
@@ -21,15 +18,16 @@ class MyTcpSocket
 {
 private:
   MyNetwork myNetwork;
-
-  // The callback to invoke when data has been received
-  void (*dataReceivedCallback)(const char* data);
+  int localfd;
+  struct sockaddr_in servaddr;
 
 public:
-  void connect(string ip, int port);
-  void disconnect();
-  void receiveCallback(void (*callback)(const char* data));
-  void send(const char* data);
+  MyTcpSocket() { localfd = 0; };
+  void connect(string ip, unsigned short port);
+  void listen(unsigned int port);
+  unsigned int receive(char* data);
+
+
 };
 
 
